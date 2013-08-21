@@ -16,14 +16,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-	    <artifactId>ldap</artifactId>
-	    <groupId>ddf.ldap</groupId>
-		<version>2.2.0</version>
+        <groupId>org.codice</groupId>
+        <artifactId>opendj-osgi</artifactId>
+		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>ldap-embedded-pom</artifactId>
-	<groupId>ddf.ldap.embedded</groupId>
-	<name>DDF LDAP Embedded</name>
+	<artifactId>opendj-osgi-embedded-pom</artifactId>
+	<groupId>org.codice.opendj-osgi.embedded</groupId>
+	<name>Codice OpenDJ-OSGi Embedded</name>
 	<packaging>pom</packaging>
 
 	<modules>

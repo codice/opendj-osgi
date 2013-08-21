@@ -16,11 +16,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>ddf.ldap</groupId>
-  <artifactId>ldap</artifactId>
-  <version>2.2.0</version>
+  <groupId>org.codice</groupId>
+  <artifactId>opendj-osgi</artifactId>
+  <version>1.0.0</version>
   <packaging>pom</packaging>
-  <name>DDF LDAP</name>
+  <name>Codice OpenDJ-OSGi</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
