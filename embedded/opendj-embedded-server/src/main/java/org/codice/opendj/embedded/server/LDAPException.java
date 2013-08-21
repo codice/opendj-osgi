@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-package ddf.ldap.embedded.server;
+package org.codice.opendj.embedded.server;
 
 
 /**

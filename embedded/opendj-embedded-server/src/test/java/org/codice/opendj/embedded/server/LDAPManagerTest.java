@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
-package ddf.ldap.embedded.server;
+package org.codice.opendj.embedded.server;
 
 
 import static org.junit.Assert.assertNotNull;
@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.apache.camel.test.AvailablePortFinder;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.codice.opendj.embedded.server.LDAPException;
+import org.codice.opendj.embedded.server.LDAPManager;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;

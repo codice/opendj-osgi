@@ -16,14 +16,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>opendj-osgi-embedded-pom</artifactId>
-	<groupId>org.codice.opendj-osgi.embedded</groupId>
-    <version>1.0.0</version>
+    <artifactId>opendj-embedded-pom</artifactId>
+    <groupId>org.codice.opendj.embedded</groupId>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>opendj-osgi-embedded-server</artifactId>
-  <name>Codice :: OpenDJ-OSGi :: Embedded :: Server</name>
-  <description>Embedded LDAP</description>
+  <artifactId>opendj-embedded-server</artifactId>
+  <name>Codice :: OpenDJ :: Embedded :: Server</name>
+  <description>Embedded LDAP Server</description>
   <packaging>bundle</packaging>
 
   <dependencies>
