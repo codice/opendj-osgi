@@ -14,9 +14,9 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
 
   <!-- Create a singleton instance of the LDAPManager-->
-  <bean id="ldapManager" class="ddf.ldap.embedded.server.LDAPManager" scope="singleton" init-method="startServer"
+  <bean id="ldapManager" class="org.codice.opendj.embedded.server.LDAPManager" scope="singleton" init-method="startServer"
     destroy-method="stopServer">
-    <cm:managed-properties persistent-id="ddf.ldap.embedded.server.LDAPManager"
+    <cm:managed-properties persistent-id="org.codice.opendj.embedded.server.LDAPManager"
       update-strategy="component-managed" update-method="updateCallback" />
     <argument ref="blueprintBundleContext" />
   </bean>

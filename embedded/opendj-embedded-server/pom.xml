@@ -105,7 +105,7 @@
               *;resolution:=optional
             </Import-Package>
             <Export-Package />
-            <Private-Package>ddf.ldap.embedded.server</Private-Package>
+            <Private-Package>org.codice.opendj.embedded.server</Private-Package>
           </instructions>
         </configuration>
       </plugin>
