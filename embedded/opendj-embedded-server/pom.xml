@@ -17,7 +17,7 @@
   <parent>
     <artifactId>opendj-embedded-pom</artifactId>
     <groupId>org.codice.opendj.embedded</groupId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>opendj-embedded-server</artifactId>
