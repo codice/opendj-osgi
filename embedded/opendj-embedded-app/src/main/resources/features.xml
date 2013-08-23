@@ -19,7 +19,7 @@
     <bundle>mvn:ch.qos.cal10n/cal10n-api/0.7.4</bundle> <!-- for slf4j-ext -->
     <bundle>mvn:org.slf4j/slf4j-ext/${org.slf4j.version}</bundle>
     <bundle>mvn:commons-io/commons-io/${commons-io.version}</bundle>
-    <bundle>mvn:commons-lang/commons-lang/2.6</bundle>
+    <bundle>mvn:commons-lang/commons-lang/${commons-lang.version}</bundle>
     <bundle>mvn:org.codice.opendj.embedded/opendj-embedded-server/${project.version}</bundle>
   </feature>
 
