@@ -245,8 +245,11 @@ public class LDAPManager
             EmbeddedUtils.stopServer(LDAPManager.class.getName(), Message.EMPTY);
             try {
                 File lockDir = new File(installDir+"/locks");
-                for (File file : lockDir.listFiles()) {
-                    FileDeleteStrategy.FORCE.delete(file);
+		if (lockDir.exists()) 
+                {
+                    for (File file : lockDir.listFiles()) {
+                        FileDeleteStrategy.FORCE.delete(file);
+                    }
                 }
             } catch (IOException ioe)
             {
