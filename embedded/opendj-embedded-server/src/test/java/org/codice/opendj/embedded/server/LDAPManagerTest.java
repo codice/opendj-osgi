@@ -90,7 +90,15 @@ public class LDAPManagerTest
         }
         finally
         {
-            manager.stopServer();
+            try 
+            {
+                manager.stopServer();
+            }
+            catch (LDAPException le)
+            {
+                le.printStackTrace();
+                fail(le.getMessage());
+            }
         }
 
     }
@@ -113,23 +121,6 @@ public class LDAPManagerTest
         {
             fail("Server should not throw exception when trying to stop an already stopped server.");
         }
-    }
-
-    @Test( expected = LDAPException.class )
-    public void TestNoDataFile() throws LDAPException
-    {
-        logger.info("Testing case where no location is given to store data.");
-        BundleContext mockContext = createMockContext(null);
-        LDAPManager manager = new LDAPManager(mockContext);
-        manager.setAdminPort(adminPort);
-        manager.setLDAPPort(ldapPort);
-        manager.setLDAPSPort(ldapsPort);
-        assertNotNull(manager);
-        logger.info("Starting Server.");
-        manager.startServer();
-        logger.info("Successfully started server, now stopping.");
-        manager.stopServer();
-        fail("Sever should not successfully start with null data file.");
     }
 
     private BundleContext createMockContext( final File dataFolderPath )
