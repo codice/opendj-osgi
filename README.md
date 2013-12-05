@@ -10,7 +10,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  */
 -->
-
+[![Build Status](https://travis-ci.org/codice/opendj-osgi.png)](https://travis-ci.org/codice/opendj-osgi?branch=master)
 # [OpenDJ Embedded OSGi](https://tools.codice.org/wiki/display/DDF/Embedded+LDAP+Configuration)
 
 
