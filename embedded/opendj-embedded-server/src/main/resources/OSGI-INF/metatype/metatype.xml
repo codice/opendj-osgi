@@ -23,6 +23,9 @@
     <AD
       description="Location to the base LDIF file. This should be used to load a base set of users into the LDAP. NOTE: Changing this will clear out backend before importing."
       name="Base LDIF File" id="base.ldif" required="true" type="String" default="" />
+    <AD
+      description="Location to storage directory."
+      name="Data Path" id="dataPath" required="true" type="String" default="etc/org.codice.opendj/ldap" />
   </OCD>
 
   <Designate pid="org.codice.opendj.embedded.server.LDAPManager">

@@ -12,6 +12,7 @@
 package org.codice.opendj.embedded.server;
 
 
+import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.opends.messages.Message;
@@ -66,6 +67,7 @@ public class LDAPManager
     private static final String DEFAULT_UPGRADE_SCHEMA_LOC = "/config/upgrade/schema.ldif.8102";
 
     private XLogger logger = new XLogger(LoggerFactory.getLogger(LDAPManager.class));
+    private String dataPath = "etc/org.codice.opendj/ldap";
     private String installDir;
     private BundleContext context;
     private boolean isFreshInstall;
@@ -134,7 +136,7 @@ public class LDAPManager
     public void startServer() throws LDAPException
     {
         logger.info("Starting LDAP Server Configuration.");
-        File installFile = context.getDataFile("ldap");
+        File installFile = new File(dataPath);
         if (installFile != null)
         {
             if (installFile.exists())
@@ -235,12 +237,27 @@ public class LDAPManager
      * Stops the underlying LDAP server. This method is set in blueprint and is
      * used when the bundle is being stopped.
      */
-    public void stopServer()
+    public void stopServer() throws LDAPException
     {
         logger.info("Stopping LDAP Server");
         if (EmbeddedUtils.isRunning())
         {
             EmbeddedUtils.stopServer(LDAPManager.class.getName(), Message.EMPTY);
+            try {
+                File lockDir = new File(installDir+"/locks");
+		if (lockDir.exists()) 
+                {
+                    for (File file : lockDir.listFiles()) {
+                        FileDeleteStrategy.FORCE.delete(file);
+                    }
+                }
+            } catch (IOException ioe)
+            {
+                LDAPException le = new LDAPException("Could not delete locks directory", ioe);
+                logger.throwing(Level.WARN, le);
+                throw le;
+            }
+   
             logger.info("LDAP Server successfully stopped.");
         }
         else
@@ -342,6 +359,14 @@ public class LDAPManager
         ConnectorType.ADMIN.currentPort = adminPortNumber;
     }
 
+    public String getDataPath() {
+        return this.dataPath;
+    }
+    
+    public void setDataPath(String dataPath) {
+        this.dataPath = dataPath;
+    }
+
     /**
      * Callback method to update the properties for the server. This method will
      * restart the server if any of the properties being updated require a
@@ -403,6 +428,17 @@ public class LDAPManager
                 {
                     IOUtils.closeQuietly(ldifStream);
                 }
+            }
+            else if ("dataPath".equals(curEntry.getKey()))
+            {
+                String newDataPath = curEntry.getValue().toString();
+                if (StringUtils.equals(dataPath, newDataPath))
+                {
+                    logger.debug("Data path unchanged, not updating.");
+                    continue;
+                }
+                setDataPath(newDataPath);
+                needsRestart = true;
             }
         }
         if (needsRestart)
