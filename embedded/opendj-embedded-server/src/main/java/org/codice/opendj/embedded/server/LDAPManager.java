@@ -12,7 +12,6 @@
 package org.codice.opendj.embedded.server;
 
 
-import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.opends.messages.Message;
@@ -233,19 +232,11 @@ public class LDAPManager
         if (EmbeddedUtils.isRunning())
         {
             EmbeddedUtils.stopServer(LDAPManager.class.getName(), Message.EMPTY);
-            try {
-                File lockDir = new File(installDir+"/locks");
-		if (lockDir.exists()) 
-                {
-                    for (File file : lockDir.listFiles()) {
-                        FileDeleteStrategy.FORCE.delete(file);
-                    }
-                }
-            } catch (IOException ioe)
+            StringBuilder lockReleaseError = new StringBuilder();
+            if (!LockFileManager.releaseLock(LockFileManager.getServerLockFileName(), lockReleaseError)) 
             {
-                LDAPException le = new LDAPException("Could not delete locks directory", ioe);
-                logger.throwing(Level.WARN, le);
-                throw le;
+                logger.warn("Could not release the main server lock file. You may need to terminate the JVM to " +
+                		"restart the server. ERROR: {}", lockReleaseError.toString());
             }
    
             logger.info("LDAP Server successfully stopped.");
