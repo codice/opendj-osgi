@@ -137,98 +137,88 @@ public class LDAPManager
     {
         logger.info("Starting LDAP Server Configuration.");
         File installFile = new File(dataPath);
-        if (installFile != null)
+        installDir = installFile.getAbsolutePath();
+        if (installFile.exists())
         {
-            if (installFile.exists())
-            {
-                isFreshInstall = false;
-                logger.debug("Configuration already exists, not setting up defaults.");
-            }
-            else
-            {
-                isFreshInstall = true;
-                logger.debug("No initial configuration found, setting defaults.");
-                installDir = installFile.getAbsolutePath();
-                createDirectory(installDir);
-                logger.info("Storing LDAP configuration at: " + installDir);
-
-                logger.info("Copying default files to configuration location.");
-                copyDefaultFiles();
-            }
-
-            try
-            {
-                // General Configuration
-                DirectoryEnvironmentConfig serverConfig = new DirectoryEnvironmentConfig();
-                serverConfig.setServerRoot(installFile);
-                serverConfig.setDisableConnectionHandlers(false);
-                serverConfig.setMaintainConfigArchive(false);
-
-                logger.debug("Starting LDAP Server.");
-                EmbeddedUtils.startServer(serverConfig);
-            }
-            catch (InitializationException ie)
-            {
-                LDAPException le = new LDAPException("Could not initialize configuration for LDAP server.", ie);
-                logger.throwing(Level.WARN, le);
-                throw le;
-            }
-            catch (ConfigException ce)
-            {
-                LDAPException le = new LDAPException("Error while starting embedded server.", ce);
-                logger.throwing(Level.WARN, le);
-                throw le;
-            }
-
-            // post start tasks if first time being started
-            if (isFreshInstall)
-            {
-                InputStream defaultLDIF = null;
-
-                try
-                {
-                    //we use the find because that searches fragments too
-                    Enumeration<URL> entries = context.getBundle().findEntries("/", "default-*.ldif", false);
-                    if(entries != null)
-                    {
-                        while(entries.hasMoreElements())
-                        {
-                            URL url = entries.nextElement();
-                            defaultLDIF = url.openStream();
-                            logger.debug("Installing default LDIF file: "+url);
-                            // load into backend
-                            loadLDIF(defaultLDIF);
-                        }
-                    }
-                }
-                catch (IOException ioe)
-                {
-                    // need to make sure that the server is stopped on error
-                    logger.warn("Error encountered during LDIF import, stopping server and cleaning up.");
-                    stopServer();
-                    throw new LDAPException("Error encountered during LDIF import, stopping server and cleaning up.",
-                        ioe);
-                }
-                catch (LDAPException le)
-                {
-                    // need to make sure that the server is stopped on error
-                    logger.warn("Error encountered during LDIF import, stopping server and cleaning up.");
-                    stopServer();
-                    throw le;
-                }
-                finally
-                {
-                    IOUtils.closeQuietly(defaultLDIF);
-                }
-
-            }
+            isFreshInstall = false;
+            logger.debug("Configuration already exists at {}, not setting up defaults.", installDir);
         }
         else
         {
-            LDAPException le = new LDAPException(
-                "Could not create data folder for embedded LDAP instance in persistant cache.");
+            isFreshInstall = true;
+            logger.debug("No initial configuration found, setting defaults.");
+            createDirectory(installDir);
+            logger.info("Storing LDAP configuration at: " + installDir);
+
+            logger.info("Copying default files to configuration location.");
+            copyDefaultFiles();
+        }
+
+        try
+        {
+            // General Configuration
+            DirectoryEnvironmentConfig serverConfig = new DirectoryEnvironmentConfig();
+            serverConfig.setServerRoot(installFile);
+            serverConfig.setDisableConnectionHandlers(false);
+            serverConfig.setMaintainConfigArchive(false);
+
+            logger.debug("Starting LDAP Server.");
+            EmbeddedUtils.startServer(serverConfig);
+        }
+        catch (InitializationException ie)
+        {
+            LDAPException le = new LDAPException("Could not initialize configuration for LDAP server.", ie);
             logger.throwing(Level.WARN, le);
             throw le;
+        }
+        catch (ConfigException ce)
+        {
+            LDAPException le = new LDAPException("Error while starting embedded server.", ce);
+            logger.throwing(Level.WARN, le);
+            throw le;
+        }
+
+        // post start tasks if first time being started
+        if (isFreshInstall)
+        {
+            InputStream defaultLDIF = null;
+
+            try
+            {
+                //we use the find because that searches fragments too
+                Enumeration<URL> entries = context.getBundle().findEntries("/", "default-*.ldif", false);
+                if(entries != null)
+                {
+                    while(entries.hasMoreElements())
+                    {
+                        URL url = entries.nextElement();
+                        defaultLDIF = url.openStream();
+                        logger.debug("Installing default LDIF file: "+url);
+                        // load into backend
+                        loadLDIF(defaultLDIF);
+                    }
+                }
+            }
+            catch (IOException ioe)
+            {
+                // need to make sure that the server is stopped on error
+                logger.warn("Error encountered during LDIF import, stopping server and cleaning up.");
+                stopServer();
+                throw new LDAPException("Error encountered during LDIF import, stopping server and cleaning up.",
+                    ioe);
+            }
+            catch (LDAPException le)
+            {
+                // need to make sure that the server is stopped on error
+                logger.warn("Error encountered during LDIF import, stopping server and cleaning up.");
+                stopServer();
+                throw le;
+            }
+            finally
+            {
+                IOUtils.closeQuietly(defaultLDIF);
+            }
+
         }
         logger.info("LDAP server successfully started.");
     }

@@ -29,7 +29,6 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.codice.opendj.embedded.server.LDAPException;
 import org.codice.opendj.embedded.server.LDAPManager;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -75,6 +74,7 @@ public class LDAPManagerTest
         manager.setAdminPort(adminPort);
         manager.setLDAPPort(ldapPort);
         manager.setLDAPSPort(ldapsPort);
+        manager.setDataPath(folder.newFolder(TMP_FOLDER_NAME).getAbsolutePath() + File.separator + "ldap");
         assertNotNull(manager);
         try
         {
