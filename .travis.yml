@@ -2,3 +2,5 @@ install: mvn install --quiet -DskipTests=true -B
 script: mvn test --quiet -B
 language: java
   - openjdk6
+  - openjdk7
+  - oraclejdk7
