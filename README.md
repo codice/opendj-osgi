@@ -11,13 +11,13 @@
  */
 -->
 [![Build Status](https://travis-ci.org/codice/opendj-osgi.png)](https://travis-ci.org/codice/opendj-osgi?branch=master)
-# [OpenDJ Embedded OSGi](https://tools.codice.org/wiki/display/DDF/Embedded+LDAP+Configuration)
+# [OpenDJ Embedded OSGi LDAP](https://tools.codice.org/wiki/display/DDF/Embedded+LDAP+Configuration)
 
 
 ## Introduction
-This project embeds the OpenDJ (http://opendj.forgerock.org/) LDAP server into an OSGi bundle that can be run on an OSGi 4.2+ container.
+This project embeds the OpenDJ 2.4.6 (http://opendj.forgerock.org/) LDAP server into an OSGi bundle that can be run on an OSGi 4.2+ container.
 
-Additionally, it builds a feature application (kar) that can be deployed to an Apache Karaf (http://karaf.apache.org/) server which contains all of the necessary dependencies. This application install has been tested with Apache Karaf 2.3.2.
+Additionally, it builds a feature application (kar) that can be deployed to an Apache Karaf (http://karaf.apache.org/) server which contains all of the necessary dependencies. This application install has been tested with Apache Karaf 2.3.x.
 
 ## Building
 ### What you need ###

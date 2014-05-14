@@ -12,24 +12,6 @@
 package org.codice.opendj.embedded.server;
 
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.opends.messages.Message;
-import org.opends.server.api.Backend;
-import org.opends.server.config.ConfigException;
-import org.opends.server.core.DirectoryServer;
-import org.opends.server.core.LockFileManager;
-import org.opends.server.types.DirectoryEnvironmentConfig;
-import org.opends.server.types.DirectoryException;
-import org.opends.server.types.InitializationException;
-import org.opends.server.types.LDIFImportConfig;
-import org.opends.server.types.LDIFImportResult;
-import org.opends.server.util.EmbeddedUtils;
-import org.osgi.framework.BundleContext;
-import org.slf4j.LoggerFactory;
-import org.slf4j.ext.XLogger;
-import org.slf4j.ext.XLogger.Level;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -44,6 +26,23 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.opends.messages.Message;
+import org.opends.server.api.Backend;
+import org.opends.server.config.ConfigException;
+import org.opends.server.core.DirectoryServer;
+import org.opends.server.core.LockFileManager;
+import org.opends.server.types.DirectoryEnvironmentConfig;
+import org.opends.server.types.DirectoryException;
+import org.opends.server.types.InitializationException;
+import org.opends.server.types.LDIFImportConfig;
+import org.opends.server.types.LDIFImportResult;
+import org.opends.server.util.EmbeddedUtils;
+import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -65,7 +64,7 @@ public class LDAPManager
     private static final String DEFAULT_SCHEMA_LOC = "/config/schema/";
     private static final String DEFAULT_UPGRADE_SCHEMA_LOC = "/config/upgrade/schema.ldif.8102";
 
-    private XLogger logger = new XLogger(LoggerFactory.getLogger(LDAPManager.class));
+    private Logger logger = LoggerFactory.getLogger(LDAPManager.class);
     private String dataPath = "etc/org.codice.opendj/ldap";
     private String installDir;
     private BundleContext context;
@@ -167,13 +166,13 @@ public class LDAPManager
         catch (InitializationException ie)
         {
             LDAPException le = new LDAPException("Could not initialize configuration for LDAP server.", ie);
-            logger.throwing(Level.WARN, le);
+            logger.warn(le.getMessage(), le);
             throw le;
         }
         catch (ConfigException ce)
         {
             LDAPException le = new LDAPException("Error while starting embedded server.", ce);
-            logger.throwing(Level.WARN, le);
+            logger.warn(le.getMessage(), le);
             throw le;
         }
 
@@ -462,19 +461,19 @@ public class LDAPManager
         catch (DirectoryException de)
         {
             LDAPException le = new LDAPException("Error while trying to import LDIF.", de);
-            logger.throwing(Level.WARN, le);
+            logger.warn(le.getMessage(), le);
             throw le;
         }
         catch (ConfigException ce)
         {
             LDAPException le = new LDAPException("Error with configuration while re-starting backend database.", ce);
-            logger.throwing(Level.WARN, le);
+            logger.warn(le.getMessage(), le);
             throw le;
         }
         catch (InitializationException ie)
         {
             LDAPException le = new LDAPException("Error while trying to re-initialize backend database.", ie);
-            logger.throwing(Level.WARN, le);
+            logger.warn(le.getMessage(), le);
             throw le;
         }
         finally
@@ -554,7 +553,7 @@ public class LDAPManager
         catch (IOException ioe)
         {
             LDAPException le = new LDAPException("Could not copy file " + from + " to " + to, ioe);
-            logger.throwing(Level.WARN, le);
+            logger.warn(le.getMessage(), le);
             throw le;
         }
         finally
@@ -663,7 +662,7 @@ public class LDAPManager
                 catch (IOException ioe)
                 {
                     LDAPException le = new LDAPException("Could not copy file " + currentURL + " to " + to, ioe);
-                    logger.throwing(Level.WARN, le);
+                    logger.warn(le.getMessage(), le);
                     throw le;
                 }
                 finally
