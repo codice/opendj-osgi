@@ -4,4 +4,5 @@ script: mvn test --quiet -B
 jdk:
   - openjdk6
   - oraclejdk7
-  - oraclejdk8
+# Oracle JDK8 does not work with current OpenDJ version: https://tools.codice.org/jira/browse/DDF-473
+#  - oraclejdk8 
