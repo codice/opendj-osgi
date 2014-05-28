@@ -655,7 +655,7 @@ objectClass: ds-cfg-file-based-key-manager-provider
 objectClass: top
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.extensions.FileBasedKeyManagerProvider
-ds-cfg-key-store-file: ../../../../../../../etc/keystores/serverKeystore.jks
+ds-cfg-key-store-file: ../../keystores/serverKeystore.jks
 ds-cfg-key-store-type: JKS
 ds-cfg-key-store-pin: changeit
 cn: JKS
@@ -2299,7 +2299,7 @@ objectClass: top
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.extensions.FileBasedTrustManagerProvider
 ds-cfg-trust-store-type: JKS
-ds-cfg-trust-store-file: ../../../../../../../etc/keystores/serverTruststore.jks
+ds-cfg-trust-store-file: ../../keystores/serverTruststore.jks
 ds-cfg-trust-store-pin: changeit
 cn: JKS
 
