@@ -10,6 +10,20 @@ objectClass: organizationalUnit
 objectClass: top
 ou: users
 
+dn: uid=guest,ou=users,dc=example,dc=com
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: extensibleObject
+objectClass: top
+cn: Guest
+sn: guest
+givenName: Guest
+mail: guest@example.com
+uid: guest
+userPassword:: e1NTSEF9VkMxcC8rSU95NHFkSWw3a3JnWkFLNkdCdHJZa3U1aUJFM0xSa1E9P
+ Q==
+
 dn: uid=testuser1,ou=users,dc=example,dc=com
 objectClass: person
 objectClass: inetOrgPerson
