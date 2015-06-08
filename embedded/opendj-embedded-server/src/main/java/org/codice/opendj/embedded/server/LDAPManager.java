@@ -62,7 +62,7 @@ public class LDAPManager
     private static final String DEFAULT_CONFIG_LOC = "/config/config.ldif";
     private static final String DEFAULT_ADMIN_BACKEND_LOC = "/config/admin-backend.ldif";
     private static final String DEFAULT_SCHEMA_LOC = "/config/schema/";
-    private static final String DEFAULT_UPGRADE_SCHEMA_LOC = "/config/upgrade/schema.ldif.8102";
+    private static final String DEFAULT_UPGRADE_SCHEMA_LOC = "/config/upgrade/schema.ldif.9086";
 
     private Logger logger = LoggerFactory.getLogger(LDAPManager.class);
     private String dataPath = "etc/org.codice.opendj/ldap";
@@ -509,6 +509,9 @@ public class LDAPManager
         // Default config files, main config uses a different method
         copyConfig(DEFAULT_CONFIG_LOC, installDir + DEFAULT_CONFIG_LOC);
         copyFile(DEFAULT_ADMIN_BACKEND_LOC, installDir + DEFAULT_ADMIN_BACKEND_LOC);
+
+        // Copy over the buildinfo file
+        copyFile("/config/buildinfo", installDir+"/config/buildinfo");
 
         // Default schema files
         // This also copies any fragment schema files
