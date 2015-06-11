@@ -1,16 +1,14 @@
 /**
  * Copyright (c) Codice Foundation
- *
+ * <p>
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 3 of the License, or any later version. 
- *
+ * version 3 of the License, or any later version.
+ * <p>
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
  * <http://www.gnu.org/licenses/lgpl.html>.
- *
  **/
 package org.codice.opendj.embedded.server;
-
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -26,8 +24,6 @@ import java.util.List;
 
 import org.apache.camel.test.AvailablePortFinder;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.codice.opendj.embedded.server.LDAPException;
-import org.codice.opendj.embedded.server.LDAPManager;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,23 +36,23 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class LDAPManagerTest
-{
+public class LDAPManagerTest {
 
     private static final String TMP_FOLDER_NAME = "test_folder";
 
-    private static Logger logger = LoggerFactory.getLogger(LDAPManagerTest.class);
     static int adminPort;
+
     static int ldapPort;
+
     static int ldapsPort;
+
+    private static Logger logger = LoggerFactory.getLogger(LDAPManagerTest.class);
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
     @BeforeClass
-    public static void getPorts()
-    {
+    public static void getPorts() {
         adminPort = AvailablePortFinder.getNextAvailable();
         logger.info("Using admin port: " + adminPort);
         ldapPort = AvailablePortFinder.getNextAvailable();
@@ -66,36 +62,28 @@ public class LDAPManagerTest
     }
 
     @Test
-    public void TestStartServer()
-    {
+    public void TestStartServer() {
         logger.info("Testing starting and stopping server.");
         BundleContext mockContext = createMockContext(folder.newFolder(TMP_FOLDER_NAME));
         LDAPManager manager = new LDAPManager(mockContext);
         manager.setAdminPort(adminPort);
         manager.setLDAPPort(ldapPort);
         manager.setLDAPSPort(ldapsPort);
-        manager.setDataPath(folder.newFolder(TMP_FOLDER_NAME).getAbsolutePath() + File.separator + "ldap");
+        manager.setDataPath(
+                folder.newFolder(TMP_FOLDER_NAME).getAbsolutePath() + File.separator + "ldap");
         assertNotNull(manager);
-        try
-        {
+        try {
             logger.info("Starting Server.");
             manager.startServer();
             logger.info("Successfully started server, now stopping.");
             manager.stopServer();
-        }
-        catch (LDAPException le)
-        {
+        } catch (LDAPException le) {
             le.printStackTrace();
             fail(le.getMessage());
-        }
-        finally
-        {
-            try 
-            {
+        } finally {
+            try {
                 manager.stopServer();
-            }
-            catch (LDAPException le)
-            {
+            } catch (LDAPException le) {
                 le.printStackTrace();
                 fail(le.getMessage());
             }
@@ -104,8 +92,7 @@ public class LDAPManagerTest
     }
 
     @Test
-    public void TestStopStopped()
-    {
+    public void TestStopStopped() {
         logger.info("Testing case to stop an already stopped server.");
         BundleContext mockContext = createMockContext(folder.newFolder(TMP_FOLDER_NAME));
         LDAPManager manager = new LDAPManager(mockContext);
@@ -113,95 +100,78 @@ public class LDAPManagerTest
         manager.setLDAPPort(ldapPort);
         manager.setLDAPSPort(ldapsPort);
         assertNotNull(manager);
-        try
-        {
+        try {
             manager.stopServer();
-        }
-        catch (Exception le)
-        {
+        } catch (Exception le) {
             fail("Server should not throw exception when trying to stop an already stopped server.");
         }
     }
 
-    private BundleContext createMockContext( final File dataFolderPath )
-    {
+    private BundleContext createMockContext(final File dataFolderPath) {
         Bundle mockBundle = Mockito.mock(Bundle.class);
-        Mockito.when(mockBundle.findEntries(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).then(
-            new Answer<Enumeration<URL>>()
-            {
+        Mockito.when(mockBundle
+                .findEntries(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+                .then(new Answer<Enumeration<URL>>() {
 
-                @Override
-                public Enumeration<URL> answer( InvocationOnMock invocation ) throws Throwable
-                {
+                            @Override
+                            public Enumeration<URL> answer(InvocationOnMock invocation)
+                                    throws Throwable {
 
-                    Object[] arguments = invocation.getArguments();
-                    String path = arguments[0].toString();
-                    String filePattern = arguments[1].toString();
-                    boolean recurse = (Boolean) arguments[2];
-                    final URL url = this.getClass().getResource(path);
-                    File pathFile = null;
-                    try
-                    {
-                        pathFile = new File(url.toURI());
-                    }
-                    catch (URISyntaxException e)
-                    {
-                        throw new RuntimeException("Unable to resolve file path", e);
-                    }
-                    final File[] files = pathFile.listFiles((FileFilter) new WildcardFileFilter(filePattern));
-                    Enumeration<URL> enumer = new Enumeration<URL>()
-                    {
-                        int place = 0;
-                        List<File> urlList = Arrays.asList(files);
+                                Object[] arguments = invocation.getArguments();
+                                String path = arguments[0].toString();
+                                String filePattern = arguments[1].toString();
+                                boolean recurse = (Boolean) arguments[2];
+                                final URL url = this.getClass().getResource(path);
+                                File pathFile = null;
+                                try {
+                                    pathFile = new File(url.toURI());
+                                } catch (URISyntaxException e) {
+                                    throw new RuntimeException("Unable to resolve file path", e);
+                                }
+                                final File[] files = pathFile.listFiles(
+                                        (FileFilter) new WildcardFileFilter(filePattern));
+                                Enumeration<URL> enumer = new Enumeration<URL>() {
+                                    int place = 0;
 
-                        @Override
-                        public boolean hasMoreElements()
-                        {
-                            return place < urlList.size();
-                        }
+                                    List<File> urlList = Arrays.asList(files);
 
-                        @Override
-                        public URL nextElement()
-                        {
-                            File file = urlList.get(place++);
-                            try
-                            {
-                                return file.toURL();
+                                    @Override
+                                    public boolean hasMoreElements() {
+                                        return place < urlList.size();
+                                    }
+
+                                    @Override
+                                    public URL nextElement() {
+                                        File file = urlList.get(place++);
+                                        try {
+                                            return file.toURL();
+                                        } catch (MalformedURLException e) {
+                                            throw new RuntimeException("Unable to convert to URL",
+                                                    e);
+                                        }
+                                    }
+                                };
+                                return enumer;
                             }
-                            catch (MalformedURLException e)
-                            {
-                                throw new RuntimeException("Unable to convert to URL", e);
-                            }
-                        }
-                    };
-                    return enumer;
-                }
 
-            });
-        Mockito.when(mockBundle.getResource(Mockito.anyString())).then(new Answer<URL>()
-        {
+                        });
+        Mockito.when(mockBundle.getResource(Mockito.anyString())).then(new Answer<URL>() {
 
             @Override
-            public URL answer( InvocationOnMock invocation ) throws Throwable
-            {
+            public URL answer(InvocationOnMock invocation) throws Throwable {
                 return this.getClass().getResource((String) invocation.getArguments()[0]);
             }
 
         });
         BundleContext mockContext = Mockito.mock(BundleContext.class);
-        Mockito.when(mockContext.getDataFile(Mockito.anyString())).then(new Answer<File>()
-        {
+        Mockito.when(mockContext.getDataFile(Mockito.anyString())).then(new Answer<File>() {
 
             @Override
-            public File answer( InvocationOnMock invocation ) throws Throwable
-            {
+            public File answer(InvocationOnMock invocation) throws Throwable {
                 String filename = invocation.getArguments()[0].toString();
-                if (dataFolderPath != null)
-                {
+                if (dataFolderPath != null) {
                     return new File(dataFolderPath + "/" + filename);
-                }
-                else
-                {
+                } else {
                     return null;
                 }
             }

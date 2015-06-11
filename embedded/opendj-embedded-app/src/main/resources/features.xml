@@ -13,8 +13,8 @@
  -->
 <features name="${project.artifactId}-${project.version}">
 
-  <feature name="opendj-embedded" version="${project.version}" description="OpenDJ Embedded LDAP">
-    <bundle>mvn:org.codice.opendj.embedded/opendj-embedded-server/${project.version}</bundle>
-  </feature>
+    <feature name="opendj-embedded" version="${project.version}" description="OpenDJ Embedded LDAP">
+        <bundle>mvn:org.codice.opendj.embedded/opendj-embedded-server/${project.version}</bundle>
+    </feature>
 
 </features>
