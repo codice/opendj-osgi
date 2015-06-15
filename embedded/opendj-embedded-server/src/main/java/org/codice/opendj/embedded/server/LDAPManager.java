@@ -148,7 +148,7 @@ public class LDAPManager {
                     while (entries.hasMoreElements()) {
                         URL url = entries.nextElement();
                         defaultLDIF = url.openStream();
-                        logger.debug("Installing default LDIF file: " + url);
+                        logger.debug("Installing default LDIF file: {}", url);
                         // load into backend
                         loadLDIF(defaultLDIF);
                     }
@@ -372,15 +372,15 @@ public class LDAPManager {
             ldifConfig.setValidateSchema(false);
             ldifConfig.setSkipDNValidation(false);
             Backend backend = DirectoryServer.getBackend(DEFAULT_DB_ID);
-            logger.debug("Got reference to backend: " + backend.getBackendID());
+            logger.debug("Got reference to backend: {}", backend.getBackendID());
             String lockFile = LockFileManager.getBackendLockFileName(backend);
             LockFileManager.acquireExclusiveLock(lockFile, new StringBuilder());
             backend.finalizeBackend();
             LDIFImportResult importResult = backend.importLDIF(ldifConfig);
-            logger.debug("Complete result of import: " + importResult);
+            logger.debug("Complete result of import: {}", importResult);
             backend.initializeBackend();
             LockFileManager.releaseLock(lockFile, new StringBuilder());
-            logger.info(importResult.getEntriesImported() + " entries imported.");
+            logger.info("{} entries imported.", importResult.getEntriesImported());
         } catch (DirectoryException de) {
             LDAPException le = new LDAPException("Error while trying to import LDIF.", de);
             logger.warn(le.getMessage(), le);
@@ -490,15 +490,14 @@ public class LDAPManager {
     private String updatePort(ConnectorType connector, String configStr) {
         String newConfig = configStr.trim();
         if (connector.currentPort == 0) {
-            logger.info("Disabling " + connector.connectorName + " connector.");
+            logger.info("Disabling {} connector.", connector.connectorName);
             newConfig = newConfig.replaceFirst(connector.enableVariable, Boolean.FALSE.toString());
             // server does not like 0 in the config for the port, resetting it
             // to the default even though it is disabled
             newConfig = newConfig
                     .replaceFirst(connector.portVariable, Integer.toString(connector.defaultPort));
         } else {
-            logger.info("Updating port for " + connector.connectorName + " connector to "
-                    + connector.currentPort);
+            logger.info("Updating port for {} connector to {}", connector.connectorName, connector.currentPort);
             newConfig = newConfig.replaceFirst(connector.enableVariable, Boolean.TRUE.toString());
             newConfig = newConfig
                     .replaceFirst(connector.portVariable, Integer.toString(connector.currentPort));
