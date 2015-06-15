@@ -376,7 +376,7 @@ objectClass: ds-cfg-certificate-mapper
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.extensions.SubjectAttributeToUserAttributeCertificateMapper
 ds-cfg-subject-attribute-mapping: cn:cn
-ds-cfg-subject-attribute-mapping: e:mail
+ds-cfg-subject-attribute-mapping: emailAddress:mail
 cn: Subject Attribute to User Attribute
 
 dn: cn=Subject DN to User Attribute,cn=Certificate Mappers,cn=config
@@ -471,7 +471,7 @@ ds-cfg-enabled: false
 ds-cfg-java-class: org.opends.server.protocols.LDIFConnectionHandler
 ds-cfg-ldif-directory: config/auto-process-ldif
 ds-cfg-poll-interval: 5 seconds
-cn: LDIF Connection Handler 
+cn:: TERJRiBDb25uZWN0aW9uIEhhbmRsZXIg
 
 dn: cn=Crypto Manager,cn=config
 objectClass: top
@@ -771,8 +771,8 @@ ds-cfg-log-file-permissions: 640
 dn: cn=File-Based Audit Logger,cn=Loggers,cn=config
 objectClass: ds-cfg-log-publisher
 objectClass: ds-cfg-access-log-publisher
-objectClass: ds-cfg-file-based-access-log-publisher
 objectClass: top
+objectClass: ds-cfg-file-based-audit-log-publisher
 ds-cfg-retention-policy: cn=File Count Retention Policy,cn=Log Retention Policies,cn=config
 ds-cfg-rotation-policy: cn=24 Hours Time Limit Rotation Policy,cn=Log Rotation Policies,cn=config
 ds-cfg-rotation-policy: cn=Size Limit Rotation Policy,cn=Log Rotation Policies,cn=config
@@ -1003,8 +1003,6 @@ ds-cfg-collation: bg:1.3.6.1.4.1.42.2.27.9.4.23.1
 ds-cfg-collation: ca:1.3.6.1.4.1.42.2.27.9.4.25.1
 ds-cfg-collation: cs:1.3.6.1.4.1.42.2.27.9.4.26.1
 ds-cfg-collation: da:1.3.6.1.4.1.42.2.27.9.4.27.1
-ds-cfg-collation: de:1.3.6.1.4.1.142.2.27.9.4.28.1
-ds-cfg-collation: de-DE:1.3.6.1.4.1.142.2.27.9.4.28.1
 ds-cfg-collation: de-AT:1.3.6.1.4.1.42.2.27.9.4.29.1
 ds-cfg-collation: de-CH:1.3.6.1.4.1.42.2.27.9.4.31.1
 ds-cfg-collation: de-LU:1.3.6.1.4.1.42.2.27.9.4.32.1
@@ -1084,6 +1082,8 @@ ds-cfg-collation: zh:1.3.6.1.4.1.42.2.27.9.4.143.1
 ds-cfg-collation: zh-CN:1.3.6.1.4.1.42.2.27.9.4.144.1
 ds-cfg-collation: zh-HK:1.3.6.1.4.1.42.2.27.9.4.145.1
 ds-cfg-collation: zh-TW:1.3.6.1.4.1.42.2.27.9.4.148.1
+ds-cfg-collation: de:1.3.6.1.4.1.42.2.27.9.4.28.1
+ds-cfg-collation: de-DE:1.3.6.1.4.1.42.2.27.9.4.28.1
 
 dn: cn=Directory String First Component Equality Matching Rule,cn=Matching Rules,cn=config
 objectClass: ds-cfg-matching-rule
@@ -1399,6 +1399,7 @@ cn: Password Policies
 dn: cn=Default Password Policy,cn=Password Policies,cn=config
 objectClass: ds-cfg-password-policy
 objectClass: top
+objectClass: ds-cfg-authentication-policy
 ds-cfg-skip-validation-for-administrators: false
 ds-cfg-force-change-on-add: false
 ds-cfg-state-update-failure-policy: reactive
@@ -1426,10 +1427,12 @@ ds-cfg-allow-expired-password-changes: false
 ds-cfg-password-expiration-warning-interval: 5 days
 ds-cfg-password-attribute: userPassword
 ds-cfg-min-password-age: 0 seconds
+ds-cfg-java-class: org.opends.server.core.PasswordPolicyFactory
 
 dn: cn=Root Password Policy,cn=Password Policies,cn=config
 objectClass: ds-cfg-password-policy
 objectClass: top
+objectClass: ds-cfg-authentication-policy
 ds-cfg-skip-validation-for-administrators: false
 ds-cfg-force-change-on-add: false
 ds-cfg-state-update-failure-policy: ignore
@@ -1456,6 +1459,7 @@ ds-cfg-allow-expired-password-changes: false
 ds-cfg-password-expiration-warning-interval: 5 days
 ds-cfg-password-attribute: userPassword
 ds-cfg-min-password-age: 0 seconds
+ds-cfg-java-class: org.opends.server.core.PasswordPolicyFactory
 
 dn: cn=Password Storage Schemes,cn=config
 objectClass: top
@@ -1588,6 +1592,7 @@ ds-cfg-test-reversed-password: true
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.extensions.AttributeValuePasswordValidator
 cn: Attribute Value
+ds-cfg-check-substrings: false
 
 dn: cn=Character Set,cn=Password Validators,cn=config
 objectClass: ds-cfg-character-set-password-validator
@@ -1597,7 +1602,6 @@ ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.extensions.CharacterSetPasswordValidator
 ds-cfg-allow-unclassified-characters: true
 ds-cfg-character-set: 1:abcdefghijklmnopqrstuvwxyz
-ds-cfg-character-set: 1:ABCDEFGHIJKLMNOPQRSTUVWXYZ
 ds-cfg-character-set: 1:0123456789
 ds-cfg-character-set: 1:~!@#$%^&*()-_=+[]{}|;:,.<>/?
 cn: Character Set
@@ -1612,6 +1616,7 @@ ds-cfg-java-class: org.opends.server.extensions.DictionaryPasswordValidator
 ds-cfg-dictionary-file: config/wordlist.txt
 cn: Dictionary
 ds-cfg-case-sensitive-validation: false
+ds-cfg-check-substrings: false
 
 dn: cn=Length-Based Password Validator,cn=Password Validators,cn=config
 objectClass: ds-cfg-length-based-password-validator
@@ -1981,9 +1986,11 @@ cn: Boolean
 dn: cn=Certificate,cn=Syntaxes,cn=config
 objectClass: ds-cfg-attribute-syntax
 objectClass: top
+objectClass: ds-cfg-certificate-attribute-syntax
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.schema.CertificateSyntax
 cn: Certificate
+ds-cfg-strict-format: false
 
 dn: cn=Certificate List,cn=Syntaxes,cn=config
 objectClass: ds-cfg-attribute-syntax
@@ -2002,9 +2009,11 @@ cn: Certificate Pair
 dn: cn=Country String,cn=Syntaxes,cn=config
 objectClass: ds-cfg-attribute-syntax
 objectClass: top
+objectClass: ds-cfg-country-string-attribute-syntax
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.schema.CountryStringSyntax
 cn: Country String
+ds-cfg-strict-format: false
 
 dn: cn=Delivery Method,cn=Syntaxes,cn=config
 objectClass: ds-cfg-attribute-syntax
@@ -2095,9 +2104,11 @@ cn: Integer
 dn: cn=JPEG,cn=Syntaxes,cn=config
 objectClass: ds-cfg-attribute-syntax
 objectClass: top
+objectClass: ds-cfg-jpeg-attribute-syntax
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.schema.JPEGSyntax
 cn: JPEG
+ds-cfg-strict-format: false
 
 dn: cn=LDAP Syntax Description,cn=Syntaxes,cn=config
 objectClass: ds-cfg-attribute-syntax
@@ -2374,7 +2385,7 @@ objectClass: ds-cfg-is-member-of-virtual-attribute
 objectClass: top
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.extensions.IsMemberOfVirtualAttributeProvider
-ds-cfg-filter: (objectClass=person)
+ds-cfg-filter: (|(objectClass=person)(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=groupOfEntries))
 ds-cfg-conflict-behavior: virtual-overrides-real
 cn: isMemberOf
 ds-cfg-attribute-type: isMemberOf
@@ -2460,4 +2471,72 @@ dn: cn=Workflows,cn=config
 objectClass: top
 objectClass: ds-cfg-branch
 cn: Workflows
+
+dn: cn=etag,cn=Virtual Attributes,cn=config
+objectClass: top
+objectClass: ds-cfg-virtual-attribute
+objectClass: ds-cfg-entity-tag-virtual-attribute
+cn: etag
+ds-cfg-java-class: org.opends.server.extensions.EntityTagVirtualAttributeProvider
+ds-cfg-enabled: true
+ds-cfg-attribute-type: etag
+ds-cfg-conflict-behavior: real-overrides-virtual
+ds-cfg-checksum-algorithm: adler-32
+ds-cfg-excluded-attribute: ds-sync-hist
+
+dn: cn=Password Expiration Time,cn=Virtual Attributes,cn=config
+objectClass: top
+objectClass: ds-cfg-virtual-attribute
+objectClass: ds-cfg-password-expiration-time-virtual-attribute
+cn: Password Expiration Time
+ds-cfg-java-class: org.opends.server.extensions.PasswordExpirationTimeVirtualAttributeProvider
+ds-cfg-enabled: true
+ds-cfg-attribute-type: ds-pwp-password-expiration-time
+ds-cfg-conflict-behavior: virtual-overrides-real
+
+dn: cn=PBKDF2,cn=Password Storage Schemes,cn=config
+objectClass: top
+objectClass: ds-cfg-password-storage-scheme
+objectClass: ds-cfg-pbkdf2-password-storage-scheme
+cn: PBKDF2
+ds-cfg-java-class: org.opends.server.extensions.PBKDF2PasswordStorageScheme
+ds-cfg-enabled: true
+
+dn: cn=HTTP Connection Handler,cn=Connection Handlers,cn=config
+objectClass: ds-cfg-http-connection-handler
+objectClass: ds-cfg-connection-handler
+objectClass: top
+ds-cfg-listen-port: 8080
+cn: HTTP Connection Handler
+ds-cfg-max-blocked-write-time-limit: 2 minutes
+ds-cfg-ssl-client-auth-policy: optional
+ds-cfg-use-tcp-keep-alive: true
+ds-cfg-max-request-size: 5 megabytes
+ds-cfg-use-tcp-no-delay: true
+ds-cfg-allow-tcp-reuse-address: true
+ds-cfg-accept-backlog: 128
+ds-cfg-authentication-required: true
+ds-cfg-buffer-size: 4096 bytes
+ds-cfg-config-file: config/http-config.json
+ds-cfg-listen-address: 0.0.0.0
+ds-cfg-java-class: org.opends.server.protocols.http.HTTPConnectionHandler
+ds-cfg-keep-stats: true
+ds-cfg-ssl-cert-nickname: server-cert
+ds-cfg-use-ssl: false
+ds-cfg-enabled: false
+
+dn: cn=File-Based HTTP Access Logger,cn=Loggers,cn=config
+objectClass: ds-cfg-file-based-http-access-log-publisher
+objectClass: top
+objectClass: ds-cfg-http-access-log-publisher
+objectClass: ds-cfg-log-publisher
+cn: File-Based HTTP Access Logger
+ds-cfg-java-class: org.opends.server.loggers.TextHTTPAccessLogPublisher
+ds-cfg-asynchronous: true
+ds-cfg-log-file: logs/http-access
+ds-cfg-rotation-policy: cn=24 Hours Time Limit Rotation Policy,cn=Log Rotation Policies,cn=config
+ds-cfg-rotation-policy: cn=Size Limit Rotation Policy,cn=Log Rotation Policies,cn=config
+ds-cfg-retention-policy: cn=File Count Retention Policy,cn=Log Retention Policies,cn=config
+ds-cfg-log-file-permissions: 640
+ds-cfg-enabled: false
 
