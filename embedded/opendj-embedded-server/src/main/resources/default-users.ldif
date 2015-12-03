@@ -182,10 +182,10 @@ member: uid=lcage,ou=users,dc=example,dc=com
 member: uid=srogers,ou=users,dc=example,dc=com
 member: uid=nromanova,ou=users,dc=example,dc=com
 
-dn: cn=admin,ou=groups,dc=example,dc=com
+dn: cn=system-admin,ou=groups,dc=example,dc=com
 objectClass: groupOfNames
 objectClass: top
-cn: admin
+cn: system-admin
 description: Karaf Admin Users
 member: uid=admin,ou=users,dc=example,dc=com
 member: uid=bbanner,ou=users,dc=example,dc=com
