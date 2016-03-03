@@ -2,7 +2,4 @@ language: java
 install: mvn install --quiet -DskipTests=true -B
 script: mvn test --quiet -B
 jdk:
-  - openjdk7
-  - oraclejdk7
-# Oracle JDK8 does not work with current OpenDJ version: https://tools.codice.org/jira/browse/DDF-473
-#  - oraclejdk8 
+  - oraclejdk8

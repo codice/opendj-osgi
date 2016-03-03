@@ -127,7 +127,7 @@ ds-cfg-listen-address: 0.0.0.0
 ds-cfg-listen-port: admin.port
 cn: Administration Connector
 ds-cfg-key-manager-provider: cn=Administration,cn=Key Manager Providers,cn=config
-ds-cfg-ssl-cert-nickname: admin-cert
+ds-cfg-ssl-cert-nickname: 1
 ds-cfg-trust-manager-provider: cn=Administration,cn=Trust Manager Providers,cn=config
 
 dn: cn=Alert Handlers,cn=config
@@ -170,7 +170,7 @@ ds-cfg-enabled: true
 ds-cfg-backend-id: ads-truststore
 ds-cfg-java-class: org.opends.server.backends.TrustStoreBackend
 ds-cfg-trust-store-file: config/ads-truststore
-ds-cfg-writability-mode: enabled
+ds-cfg-writability-mode: disabled
 ds-cfg-trust-store-pin-file: config/ads-truststore.pin
 
 dn: ds-cfg-backend-id=backup,cn=Backends,cn=config
@@ -644,9 +644,9 @@ objectClass: ds-cfg-file-based-key-manager-provider
 objectClass: top
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.extensions.FileBasedKeyManagerProvider
-ds-cfg-key-store-file: config/admin-keystore
-ds-cfg-key-store-type: JKS
-ds-cfg-key-store-pin-file: config/admin-keystore.pin
+ds-cfg-key-store-file: key.store.loc
+ds-cfg-key-store-type: key.store.type
+ds-cfg-key-store-pin-file: key.store.pin.loc
 cn: Administration
 
 dn: cn=JKS,cn=Key Manager Providers,cn=config
@@ -655,19 +655,10 @@ objectClass: ds-cfg-file-based-key-manager-provider
 objectClass: top
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.extensions.FileBasedKeyManagerProvider
-ds-cfg-key-store-file: ../../keystores/serverKeystore.jks
-ds-cfg-key-store-type: JKS
-ds-cfg-key-store-pin: changeit
+ds-cfg-key-store-file: key.store.loc
+ds-cfg-key-store-type: key.store.type
+ds-cfg-key-store-pin: key.store.pw
 cn: JKS
-
-dn: cn=PKCS11,cn=Key Manager Providers,cn=config
-objectClass: ds-cfg-pkcs11-key-manager-provider
-objectClass: ds-cfg-key-manager-provider
-objectClass: top
-ds-cfg-enabled: false
-ds-cfg-java-class: org.opends.server.extensions.PKCS11KeyManagerProvider
-ds-cfg-key-store-pin-file: config/keystore.p11.pin
-cn: PKCS11
 
 dn: cn=PKCS12,cn=Key Manager Providers,cn=config
 objectClass: ds-cfg-key-manager-provider
@@ -675,9 +666,9 @@ objectClass: ds-cfg-file-based-key-manager-provider
 objectClass: top
 ds-cfg-enabled: false
 ds-cfg-java-class: org.opends.server.extensions.FileBasedKeyManagerProvider
-ds-cfg-key-store-file: config/keystore.p12
-ds-cfg-key-store-type: PKCS12
-ds-cfg-key-store-pin-file: config/keystore.p12.pin
+ds-cfg-key-store-file: key.store.loc
+ds-cfg-key-store-type: key.store.type
+ds-cfg-key-store-pin: key.store.pw
 cn: PKCS12
 
 dn: cn=Log Retention Policies,cn=config
@@ -2291,8 +2282,9 @@ objectClass: ds-cfg-trust-manager-provider
 objectClass: top
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.extensions.FileBasedTrustManagerProvider
-ds-cfg-trust-store-type: JKS
-ds-cfg-trust-store-file: config/admin-truststore
+ds-cfg-trust-store-type: trust.store.type
+ds-cfg-trust-store-file: trust.store.loc
+ds-cfg-trust-store-pin: trust.store.pw
 cn: Administration
 
 dn: cn=Blind Trust,cn=Trust Manager Providers,cn=config
@@ -2309,9 +2301,9 @@ objectClass: ds-cfg-trust-manager-provider
 objectClass: top
 ds-cfg-enabled: true
 ds-cfg-java-class: org.opends.server.extensions.FileBasedTrustManagerProvider
-ds-cfg-trust-store-type: JKS
-ds-cfg-trust-store-file: ../../keystores/serverTruststore.jks
-ds-cfg-trust-store-pin: changeit
+ds-cfg-trust-store-type: trust.store.type
+ds-cfg-trust-store-file: trust.store.loc
+ds-cfg-trust-store-pin: trust.store.pw
 cn: JKS
 
 dn: cn=PKCS12,cn=Trust Manager Providers,cn=config
@@ -2320,8 +2312,9 @@ objectClass: ds-cfg-trust-manager-provider
 objectClass: top
 ds-cfg-enabled: false
 ds-cfg-java-class: org.opends.server.extensions.FileBasedTrustManagerProvider
-ds-cfg-trust-store-type: PKCS12
-ds-cfg-trust-store-file: config/truststore.p12
+ds-cfg-trust-store-type: trust.store.type
+ds-cfg-trust-store-file: trust.store.loc
+ds-cfg-trust-store-pin: trust.store.pw
 cn: PKCS12
 
 dn: cn=Virtual Attributes,cn=config
@@ -2521,7 +2514,7 @@ ds-cfg-config-file: config/http-config.json
 ds-cfg-listen-address: 0.0.0.0
 ds-cfg-java-class: org.opends.server.protocols.http.HTTPConnectionHandler
 ds-cfg-keep-stats: true
-ds-cfg-ssl-cert-nickname: server-cert
+ds-cfg-ssl-cert-nickname: 1
 ds-cfg-use-ssl: false
 ds-cfg-enabled: false
 
