@@ -15,13 +15,13 @@
 
 
 ## Introduction
-This project embeds the OpenDJ 2.4.6 (http://opendj.forgerock.org/) LDAP server into an OSGi bundle that can be run on an OSGi 4.2+ container.
+This project embeds the OpenDJ 2.6.2 (http://opendj.forgerock.org/) LDAP server into an OSGi bundle that can be run on an OSGi 4.2+ container.
 
-Additionally, it builds a feature application (kar) that can be deployed to an Apache Karaf (http://karaf.apache.org/) server which contains all of the necessary dependencies. This application install has been tested with Apache Karaf 2.3.x.
+Additionally, it builds a feature application (kar) that can be deployed to an Apache Karaf (http://karaf.apache.org/) server which contains all of the necessary dependencies. This application install has been tested with Apache Karaf 2.4.x - 4.0.x.
 
 ## Building
 ### What you need ###
-* [Install J2SE 7 SDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html). 
+* [Install J2SE 8 SDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html). 
 * Make sure that your JAVA\_HOME environment variable is set to the newly installed JDK location, and that your PATH includes %JAVA\_HOME%\bin (Windows) or $JAVA\_HOME$/bin (\*NIX).
 * [Install Maven 3.0.3 \(or later\)](http://maven.apache.org/download.html). Make sure that your PATH includes the MVN\_HOME/bin directory.
 * Set the MAVEN_OPTS variable with the appropriate memory settings
