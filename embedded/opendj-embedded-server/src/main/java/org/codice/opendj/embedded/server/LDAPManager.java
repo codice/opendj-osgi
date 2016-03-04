@@ -221,6 +221,9 @@ public class LDAPManager {
             Files.delete(trustStorePin);
         }
 
+        Files.createFile(keyStorePin);
+        Files.createFile(trustStorePin);
+
         BufferedWriter keyStorePinWriter = Files.newBufferedWriter(keyStorePin);
         try {
             keyStorePinWriter.write(DEFAULT_KEY_STORE_PW);
