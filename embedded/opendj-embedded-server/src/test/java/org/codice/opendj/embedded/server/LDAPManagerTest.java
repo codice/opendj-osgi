@@ -1,9 +1,9 @@
 /**
  * Copyright (c) Codice Foundation
- * <p>
+ * <p/>
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
  * version 3 of the License, or any later version.
- * <p>
+ * <p/>
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
  * <http://www.gnu.org/licenses/lgpl.html>.
@@ -15,6 +15,9 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -23,7 +26,9 @@ import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.camel.test.AvailablePortFinder;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,6 +66,36 @@ public class LDAPManagerTest {
         logger.info("Using ldaps port: " + adminPort);
     }
 
+    @Before
+    public void setup() throws IOException {
+        File systemKeystoreFile = folder.newFile("serverKeystore.jks");
+        FileOutputStream systemKeyOutStream = new FileOutputStream(systemKeystoreFile);
+        InputStream systemKeyStream = LDAPManager.class.getResourceAsStream("/serverKeystore.jks");
+        IOUtils.copy(systemKeyStream, systemKeyOutStream);
+
+        File systemTruststoreFile = folder.newFile("serverTruststore.jks");
+        FileOutputStream systemTrustOutStream = new FileOutputStream(systemTruststoreFile);
+        InputStream systemTrustStream = LDAPManager.class.getResourceAsStream(
+                "/serverTruststore.jks");
+        IOUtils.copy(systemTrustStream, systemTrustOutStream);
+
+        IOUtils.closeQuietly(systemKeyStream);
+        IOUtils.closeQuietly(systemKeyOutStream);
+        IOUtils.closeQuietly(systemTrustStream);
+        IOUtils.closeQuietly(systemTrustOutStream);
+
+        System.setProperty("javax.net.ssl.keyStore", systemKeystoreFile.getAbsolutePath());
+        System.setProperty("javax.net.ssl.trustStore", systemTruststoreFile.getAbsolutePath());
+
+        System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+        System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
+
+        System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+        System.setProperty("javax.net.ssl.keyStoreType", "JKS");
+
+        System.setProperty("java.io.tmpdir", folder.newFolder("pinfolder").getAbsolutePath());
+    }
+
     @Test
     public void TestStartServer() {
         logger.info("Testing starting and stopping server.");
@@ -69,8 +104,8 @@ public class LDAPManagerTest {
         manager.setAdminPort(adminPort);
         manager.setLDAPPort(ldapPort);
         manager.setLDAPSPort(ldapsPort);
-        manager.setDataPath(
-                folder.newFolder(TMP_FOLDER_NAME).getAbsolutePath() + File.separator + "ldap");
+        manager.setDataPath(folder.newFolder(TMP_FOLDER_NAME)
+                .getAbsolutePath() + File.separator + "ldap");
         assertNotNull(manager);
         try {
             logger.info("Starting Server.");
@@ -109,75 +144,78 @@ public class LDAPManagerTest {
 
     private BundleContext createMockContext(final File dataFolderPath) {
         Bundle mockBundle = Mockito.mock(Bundle.class);
-        Mockito.when(mockBundle
-                .findEntries(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+        Mockito.when(mockBundle.findEntries(Mockito.anyString(), Mockito.anyString(),
+                Mockito.anyBoolean()))
                 .then(new Answer<Enumeration<URL>>() {
 
+                    @Override
+                    public Enumeration<URL> answer(InvocationOnMock invocation) throws Throwable {
+
+                        Object[] arguments = invocation.getArguments();
+                        String path = arguments[0].toString();
+                        String filePattern = arguments[1].toString();
+                        boolean recurse = (Boolean) arguments[2];
+                        final URL url = this.getClass()
+                                .getResource(path);
+                        File pathFile = null;
+                        try {
+                            pathFile = new File(url.toURI());
+                        } catch (URISyntaxException e) {
+                            throw new RuntimeException("Unable to resolve file path", e);
+                        }
+                        final File[] files = pathFile.listFiles(
+                                (FileFilter) new WildcardFileFilter(filePattern));
+                        Enumeration<URL> enumer = new Enumeration<URL>() {
+                            int place = 0;
+
+                            List<File> urlList = Arrays.asList(files);
+
                             @Override
-                            public Enumeration<URL> answer(InvocationOnMock invocation)
-                                    throws Throwable {
-
-                                Object[] arguments = invocation.getArguments();
-                                String path = arguments[0].toString();
-                                String filePattern = arguments[1].toString();
-                                boolean recurse = (Boolean) arguments[2];
-                                final URL url = this.getClass().getResource(path);
-                                File pathFile = null;
-                                try {
-                                    pathFile = new File(url.toURI());
-                                } catch (URISyntaxException e) {
-                                    throw new RuntimeException("Unable to resolve file path", e);
-                                }
-                                final File[] files = pathFile.listFiles(
-                                        (FileFilter) new WildcardFileFilter(filePattern));
-                                Enumeration<URL> enumer = new Enumeration<URL>() {
-                                    int place = 0;
-
-                                    List<File> urlList = Arrays.asList(files);
-
-                                    @Override
-                                    public boolean hasMoreElements() {
-                                        return place < urlList.size();
-                                    }
-
-                                    @Override
-                                    public URL nextElement() {
-                                        File file = urlList.get(place++);
-                                        try {
-                                            return file.toURL();
-                                        } catch (MalformedURLException e) {
-                                            throw new RuntimeException("Unable to convert to URL",
-                                                    e);
-                                        }
-                                    }
-                                };
-                                return enumer;
+                            public boolean hasMoreElements() {
+                                return place < urlList.size();
                             }
 
-                        });
-        Mockito.when(mockBundle.getResource(Mockito.anyString())).then(new Answer<URL>() {
+                            @Override
+                            public URL nextElement() {
+                                File file = urlList.get(place++);
+                                try {
+                                    return file.toURL();
+                                } catch (MalformedURLException e) {
+                                    throw new RuntimeException("Unable to convert to URL", e);
+                                }
+                            }
+                        };
+                        return enumer;
+                    }
 
-            @Override
-            public URL answer(InvocationOnMock invocation) throws Throwable {
-                return this.getClass().getResource((String) invocation.getArguments()[0]);
-            }
+                });
+        Mockito.when(mockBundle.getResource(Mockito.anyString()))
+                .then(new Answer<URL>() {
 
-        });
+                    @Override
+                    public URL answer(InvocationOnMock invocation) throws Throwable {
+                        return this.getClass()
+                                .getResource((String) invocation.getArguments()[0]);
+                    }
+
+                });
         BundleContext mockContext = Mockito.mock(BundleContext.class);
-        Mockito.when(mockContext.getDataFile(Mockito.anyString())).then(new Answer<File>() {
+        Mockito.when(mockContext.getDataFile(Mockito.anyString()))
+                .then(new Answer<File>() {
 
-            @Override
-            public File answer(InvocationOnMock invocation) throws Throwable {
-                String filename = invocation.getArguments()[0].toString();
-                if (dataFolderPath != null) {
-                    return new File(dataFolderPath + "/" + filename);
-                } else {
-                    return null;
-                }
-            }
+                    @Override
+                    public File answer(InvocationOnMock invocation) throws Throwable {
+                        String filename = invocation.getArguments()[0].toString();
+                        if (dataFolderPath != null) {
+                            return new File(dataFolderPath + "/" + filename);
+                        } else {
+                            return null;
+                        }
+                    }
 
-        });
-        Mockito.when(mockContext.getBundle()).thenReturn(mockBundle);
+                });
+        Mockito.when(mockContext.getBundle())
+                .thenReturn(mockBundle);
 
         return mockContext;
     }
