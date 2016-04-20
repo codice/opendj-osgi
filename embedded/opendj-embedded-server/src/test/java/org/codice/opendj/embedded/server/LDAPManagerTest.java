@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.camel.test.AvailablePortFinder;
@@ -30,9 +31,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -41,9 +40,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import junit.framework.Assert;
+
 public class LDAPManagerTest {
 
-    private static final String TMP_FOLDER_NAME = "test_folder";
+    private static final String TMP_FOLDER_NAME = "target/test_folder";
 
     static int adminPort;
 
@@ -52,9 +53,6 @@ public class LDAPManagerTest {
     static int ldapsPort;
 
     private static Logger logger = LoggerFactory.getLogger(LDAPManagerTest.class);
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
 
     @BeforeClass
     public static void getPorts() {
@@ -68,12 +66,14 @@ public class LDAPManagerTest {
 
     @Before
     public void setup() throws IOException {
-        File systemKeystoreFile = folder.newFile("serverKeystore.jks");
+        File systemKeystoreFile = new File("target/serverKeystore.jks");
+        systemKeystoreFile.createNewFile();
         FileOutputStream systemKeyOutStream = new FileOutputStream(systemKeystoreFile);
         InputStream systemKeyStream = LDAPManager.class.getResourceAsStream("/serverKeystore.jks");
         IOUtils.copy(systemKeyStream, systemKeyOutStream);
 
-        File systemTruststoreFile = folder.newFile("serverTruststore.jks");
+        File systemTruststoreFile = new File("target/serverTruststore.jks");
+        systemTruststoreFile.createNewFile();
         FileOutputStream systemTrustOutStream = new FileOutputStream(systemTruststoreFile);
         InputStream systemTrustStream = LDAPManager.class.getResourceAsStream(
                 "/serverTruststore.jks");
@@ -92,24 +92,37 @@ public class LDAPManagerTest {
 
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
         System.setProperty("javax.net.ssl.keyStoreType", "JKS");
-
-        System.setProperty("java.io.tmpdir", folder.newFolder("pinfolder").getAbsolutePath());
+        File pinfolder = new File("target/pinfolder");
+        pinfolder.mkdir();
+        System.setProperty("java.io.tmpdir", pinfolder.getAbsolutePath());
     }
 
     @Test
     public void TestStartServer() {
         logger.info("Testing starting and stopping server.");
-        BundleContext mockContext = createMockContext(folder.newFolder(TMP_FOLDER_NAME));
+        BundleContext mockContext = createMockContext(new File(TMP_FOLDER_NAME));
         LDAPManager manager = new LDAPManager(mockContext);
+        HashMap config = new HashMap();
+        config.put("admin.port", AvailablePortFinder.getNextAvailable());
+        config.put("ldaps.port", AvailablePortFinder.getNextAvailable());
+        config.put("ldap.port", AvailablePortFinder.getNextAvailable());
         manager.setAdminPort(adminPort);
         manager.setLDAPPort(ldapPort);
         manager.setLDAPSPort(ldapsPort);
-        manager.setDataPath(folder.newFolder(TMP_FOLDER_NAME)
-                .getAbsolutePath() + File.separator + "ldap");
+        manager.setDataPath(new File(TMP_FOLDER_NAME).getAbsolutePath() + File.separator + "ldap");
         assertNotNull(manager);
         try {
             logger.info("Starting Server.");
             manager.startServer();
+            manager.updateCallback(config);
+            Assert.assertEquals(
+                    "Admin port of " + manager.getAdminPort() + " expected " + config.get(
+                            "admin.port"), config.get("admin.port"), manager.getAdminPort());
+            Assert.assertEquals(
+                    "LDAPS port of " + manager.getLDAPSPort() + " expected " + config.get(
+                            "ldaps.port"), config.get("ldaps.port"), manager.getLDAPSPort());
+            Assert.assertEquals("LDAP port of " + manager.getLDAPPort() + " expected " + config.get(
+                    "ldap.port"), config.get("ldap.port"), manager.getLDAPPort());
             logger.info("Successfully started server, now stopping.");
             manager.stopServer();
         } catch (LDAPException le) {
@@ -129,7 +142,7 @@ public class LDAPManagerTest {
     @Test
     public void TestStopStopped() {
         logger.info("Testing case to stop an already stopped server.");
-        BundleContext mockContext = createMockContext(folder.newFolder(TMP_FOLDER_NAME));
+        BundleContext mockContext = createMockContext(new File(TMP_FOLDER_NAME));
         LDAPManager manager = new LDAPManager(mockContext);
         manager.setAdminPort(adminPort);
         manager.setLDAPPort(ldapPort);
@@ -144,7 +157,8 @@ public class LDAPManagerTest {
 
     private BundleContext createMockContext(final File dataFolderPath) {
         Bundle mockBundle = Mockito.mock(Bundle.class);
-        Mockito.when(mockBundle.findEntries(Mockito.anyString(), Mockito.anyString(),
+        Mockito.when(mockBundle.findEntries(Mockito.anyString(),
+                Mockito.anyString(),
                 Mockito.anyBoolean()))
                 .then(new Answer<Enumeration<URL>>() {
 
@@ -163,8 +177,8 @@ public class LDAPManagerTest {
                         } catch (URISyntaxException e) {
                             throw new RuntimeException("Unable to resolve file path", e);
                         }
-                        final File[] files = pathFile.listFiles(
-                                (FileFilter) new WildcardFileFilter(filePattern));
+                        final File[] files = pathFile.listFiles((FileFilter) new WildcardFileFilter(
+                                filePattern));
                         Enumeration<URL> enumer = new Enumeration<URL>() {
                             int place = 0;
 
