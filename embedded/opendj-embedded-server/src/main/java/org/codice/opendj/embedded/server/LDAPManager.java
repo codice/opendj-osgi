@@ -400,6 +400,15 @@ public class LDAPManager {
                 }
                 setLDAPSPort(newPort);
                 needsRestart = true;
+            } else if (ConnectorType.ADMIN.portVariable.equals(curEntry.getKey())) {
+                int newPort = Integer.parseInt(curEntry.getValue()
+                        .toString());
+                if (newPort == ConnectorType.ADMIN.currentPort) {
+                    logger.debug("Admin Port unchanged, not updating.");
+                    continue;
+                }
+                setAdminPort(newPort);
+                needsRestart = true;
             } else if (BASE_LDIF_STR.equals(curEntry.getKey())) {
                 InputStream ldifStream = null;
                 String ldifLocation = curEntry.getValue()

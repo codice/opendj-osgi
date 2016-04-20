@@ -22,6 +22,9 @@
         <AD description="Port to listen for LDAPS requests. Set to 0 to disable connector."
             name="LDAPS Port" id="ldaps.port" required="true"
             type="int" default="1636"/>
+        <AD description="Port to listen for Admin requests. Set to 0 to disable connector."
+            name="Admin Port" id="admin.port" required="true"
+            type="int" default="4444"/>
         <AD
                 description="Location to the base LDIF file. This should be used to load a base set of users into the LDAP. NOTE: Changing this will clear out backend before importing."
                 name="Base LDIF File" id="base.ldif" required="true" type="String" default=""/>
