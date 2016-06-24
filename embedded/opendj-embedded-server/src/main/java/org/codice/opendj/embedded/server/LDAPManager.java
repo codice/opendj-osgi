@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -611,10 +612,10 @@ public class LDAPManager {
      */
     private String updateStore(KeystoreInfo keystoreInfo, String configStr) {
         String newConfig = configStr.trim();
-        newConfig = newConfig.replaceAll(keystoreInfo.locationVar, keystoreInfo.location);
+        newConfig = newConfig.replaceAll(keystoreInfo.locationVar, Matcher.quoteReplacement(keystoreInfo.location));
         newConfig = newConfig.replaceAll(keystoreInfo.passwordVar, keystoreInfo.password);
         newConfig = newConfig.replaceAll(keystoreInfo.typeVar, keystoreInfo.type);
-        newConfig = newConfig.replaceAll(keystoreInfo.passwordPinVar, keystoreInfo.passwordPin);
+        newConfig = newConfig.replaceAll(keystoreInfo.passwordPinVar, Matcher.quoteReplacement(keystoreInfo.passwordPin));
         return newConfig;
     }
 
