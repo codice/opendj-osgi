@@ -611,10 +611,10 @@ public class LDAPManager {
      */
     private String updateStore(KeystoreInfo keystoreInfo, String configStr) {
         String newConfig = configStr.trim();
-        newConfig = newConfig.replaceAll(keystoreInfo.locationVar, keystoreInfo.location);
-        newConfig = newConfig.replaceAll(keystoreInfo.passwordVar, keystoreInfo.password);
-        newConfig = newConfig.replaceAll(keystoreInfo.typeVar, keystoreInfo.type);
-        newConfig = newConfig.replaceAll(keystoreInfo.passwordPinVar, keystoreInfo.passwordPin);
+        newConfig = newConfig.replace(keystoreInfo.locationVar, keystoreInfo.location);
+        newConfig = newConfig.replace(keystoreInfo.passwordVar, keystoreInfo.password);
+        newConfig = newConfig.replace(keystoreInfo.typeVar, keystoreInfo.type);
+        newConfig = newConfig.replace(keystoreInfo.passwordPinVar, keystoreInfo.passwordPin);
         return newConfig;
     }
 
@@ -744,12 +744,12 @@ public class LDAPManager {
 
     private enum KeystoreInfo {
 
-        TRUST_STORE(DEFAULT_TRUST_STORE_LOCATION, "trust\\.store\\.loc", DEFAULT_TRUST_STORE_PW,
-                "trust\\.store\\.pw", DEFAULT_TRUST_STORE_PW_LOCACTION, "trust\\.store\\.pin\\.loc",
-                DEFAULT_TRUST_STORE_TYPE, "trust\\.store\\.type"), KEY_STORE(
-                DEFAULT_KEY_STORE_LOCATION, "key\\.store\\.loc", DEFAULT_KEY_STORE_PW,
-                "key\\.store\\.pw", DEFAULT_KEY_STORE_PW_LOCACTION, "key\\.store\\.pin\\.loc",
-                DEFAULT_KEY_STORE_TYPE, "key\\.store\\.type");
+        TRUST_STORE(DEFAULT_TRUST_STORE_LOCATION, "trust.store.loc", DEFAULT_TRUST_STORE_PW,
+                "trust.store.pw", DEFAULT_TRUST_STORE_PW_LOCACTION, "trust.store.pin.loc",
+                DEFAULT_TRUST_STORE_TYPE, "trust.store.type"), KEY_STORE(
+                DEFAULT_KEY_STORE_LOCATION, "key.store.loc", DEFAULT_KEY_STORE_PW,
+                "key.store.pw", DEFAULT_KEY_STORE_PW_LOCACTION, "key.store.pin.loc",
+                DEFAULT_KEY_STORE_TYPE, "key.store.type");
 
         private String location;
 
