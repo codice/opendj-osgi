@@ -158,16 +158,6 @@
 
     <repositories>
         <repository>
-            <id>forgerock</id>
-            <name>Forgerock Releases</name>
-            <url>http://maven.forgerock.org/repo/releases/</url>
-        </repository>
-        <repository>
-            <id>oracle</id>
-            <name>Oracle Releases</name>
-            <url>http://download.oracle.com/maven/</url>
-        </repository>
-        <repository>
             <id>codice</id>
             <name>Codice Repository</name>
             <url>http://artifacts.codice.org/content/groups/public/</url>
