@@ -41,7 +41,7 @@ jobs:
       - name: Allow HTTP repositories
         run: |
           MAVEN_CONF=$(mvn -v | grep 'Maven home' | awk '{print $NF}')/conf/settings.xml
-          sed -i '/<id>maven-default-http-blocker<\/id>/,/<\/mirror>/d' "$MAVEN_CONF"
+          sed -i '/<mirror>/,/<\/mirror>/d' "$MAVEN_CONF"
 
       - name: Build
         run: mvn clean install $MAVEN_CLI_OPTS -DskipTests
@@ -64,7 +64,7 @@ jobs:
       - name: Allow HTTP repositories
         run: |
           MAVEN_CONF=$(mvn -v | grep 'Maven home' | awk '{print $NF}')/conf/settings.xml
-          sed -i '/<id>maven-default-http-blocker<\/id>/,/<\/mirror>/d' "$MAVEN_CONF"
+          sed -i '/<mirror>/,/<\/mirror>/d' "$MAVEN_CONF"
 
       - name: Build
         run: mvn clean install $MAVEN_CLI_OPTS -DskipTests
@@ -92,7 +92,7 @@ jobs:
       - name: Allow HTTP repositories
         run: |
           MAVEN_CONF=$(mvn -v | grep 'Maven home' | awk '{print $NF}')/conf/settings.xml
-          sed -i '/<id>maven-default-http-blocker<\/id>/,/<\/mirror>/d' "$MAVEN_CONF"
+          sed -i '/<mirror>/,/<\/mirror>/d' "$MAVEN_CONF"
 
       - name: Configure Maven settings
         uses: s4u/maven-settings-action@v3.0.0
