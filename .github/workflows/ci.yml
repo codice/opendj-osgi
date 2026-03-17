@@ -19,6 +19,7 @@ concurrency:
 env:
   MAVEN_OPTS: '-Xmx4G -Xms1G -Djava.security.egd=file:/dev/./urandom'
   MAVEN_CLI_OPTS: '-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn'
+  EMPTY_SETTINGS: '<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"/>'
 
 jobs:
   incremental-build:
@@ -39,9 +40,7 @@ jobs:
           cache: maven
 
       - name: Allow HTTP repositories
-        run: |
-          MAVEN_CONF=$(mvn -v | grep 'Maven home' | awk '{print $NF}')/conf/settings.xml
-          sed -i '/<mirror>/,/<\/mirror>/d' "$MAVEN_CONF"
+        run: echo "$EMPTY_SETTINGS" > "$(mvn -v | grep 'Maven home' | awk '{print $NF}')/conf/settings.xml"
 
       - name: Build
         run: mvn clean install $MAVEN_CLI_OPTS -DskipTests
@@ -62,9 +61,7 @@ jobs:
           cache: maven
 
       - name: Allow HTTP repositories
-        run: |
-          MAVEN_CONF=$(mvn -v | grep 'Maven home' | awk '{print $NF}')/conf/settings.xml
-          sed -i '/<mirror>/,/<\/mirror>/d' "$MAVEN_CONF"
+        run: echo "$EMPTY_SETTINGS" > "$(mvn -v | grep 'Maven home' | awk '{print $NF}')/conf/settings.xml"
 
       - name: Build
         run: mvn clean install $MAVEN_CLI_OPTS -DskipTests
@@ -90,9 +87,7 @@ jobs:
           cache: maven
 
       - name: Allow HTTP repositories
-        run: |
-          MAVEN_CONF=$(mvn -v | grep 'Maven home' | awk '{print $NF}')/conf/settings.xml
-          sed -i '/<mirror>/,/<\/mirror>/d' "$MAVEN_CONF"
+        run: echo "$EMPTY_SETTINGS" > "$(mvn -v | grep 'Maven home' | awk '{print $NF}')/conf/settings.xml"
 
       - name: Configure Maven settings
         uses: s4u/maven-settings-action@v3.0.0
