@@ -38,6 +38,17 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Configure Maven settings
+        uses: s4u/maven-settings-action@v3.0.0
+        with:
+          mirrors: |
+            [{
+              "id": "maven-default-http-blocker",
+              "mirrorOf": "external:http:*",
+              "url": "http://0.0.0.0/",
+              "blocked": false
+            }]
+
       - name: Build
         run: mvn clean install $MAVEN_CLI_OPTS -DskipTests
 
@@ -55,6 +66,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+
+      - name: Configure Maven settings
+        uses: s4u/maven-settings-action@v3.0.0
+        with:
+          mirrors: |
+            [{
+              "id": "maven-default-http-blocker",
+              "mirrorOf": "external:http:*",
+              "url": "http://0.0.0.0/",
+              "blocked": false
+            }]
 
       - name: Build
         run: mvn clean install $MAVEN_CLI_OPTS -DskipTests
@@ -82,6 +104,13 @@ jobs:
       - name: Configure Maven settings
         uses: s4u/maven-settings-action@v3.0.0
         with:
+          mirrors: |
+            [{
+              "id": "maven-default-http-blocker",
+              "mirrorOf": "external:http:*",
+              "url": "http://0.0.0.0/",
+              "blocked": false
+            }]
           servers: |
             [{
               "id": "releases",
