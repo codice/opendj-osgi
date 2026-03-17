@@ -44,6 +44,7 @@ jobs:
           mirrors: |
             [{
               "id": "maven-default-http-blocker",
+              "name": "Allow HTTP repositories",
               "mirrorOf": "external:http:*",
               "url": "http://0.0.0.0/",
               "blocked": false
@@ -73,6 +74,7 @@ jobs:
           mirrors: |
             [{
               "id": "maven-default-http-blocker",
+              "name": "Allow HTTP repositories",
               "mirrorOf": "external:http:*",
               "url": "http://0.0.0.0/",
               "blocked": false
@@ -107,6 +109,7 @@ jobs:
           mirrors: |
             [{
               "id": "maven-default-http-blocker",
+              "name": "Allow HTTP repositories",
               "mirrorOf": "external:http:*",
               "url": "http://0.0.0.0/",
               "blocked": false
